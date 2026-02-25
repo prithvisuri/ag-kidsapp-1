@@ -1,0 +1,9 @@
+{
+    "name": "silly-school-backend",
+    "version": "1.0.0",
+    "description": "Backend services for Silly School",
+    "main": "index.js",
+    "scripts": {
+        "start": "node src/index.js"
+    }
+}

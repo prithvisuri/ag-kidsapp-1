@@ -1,5 +1,6 @@
 
-import { addStar } from './supabase.js';
+import { addStar } from '../services/supabase.js';
+import { speak } from '../utils/speech.js';
 
 let currentOp = 'add';
 let currentQuestion = {};
@@ -42,24 +43,7 @@ function initNumbers() {
 
 
 function speakNumber(num) {
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(num.toString());
-
-        const voices = window.speechSynthesis.getVoices();
-        // Try to find Google US English as a base
-        let selectedVoice = voices.find(v => v.name.includes('Google US English'));
-        if (!selectedVoice) selectedVoice = voices.find(v => v.name.includes('Zira'));
-
-        if (selectedVoice) {
-            utterance.voice = selectedVoice;
-        }
-
-        utterance.pitch = 1.6; // High pitch for kid voice
-        utterance.rate = 1.0;  // Normal speed for energy
-
-        window.speechSynthesis.speak(utterance);
-    }
+    speak(num.toString(), null, { isKid: true, pitch: 1.6, rate: 1.0 });
 }
 
 function startQuiz() {

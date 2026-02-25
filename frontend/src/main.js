@@ -1,8 +1,8 @@
-import './style.css'
-import { initAlphabet } from './alphabet.js'
-import { initMath } from './math.js'
-import { initRhymes } from './rhymes.js'
-import { initSupabase } from './supabase.js'
+import './styles/style.css'
+import { initAlphabet } from './features/alphabet.js'
+import { initMath } from './features/math.js'
+import { initRhymes } from './features/rhymes.js'
+import { initSupabase } from './services/supabase.js'
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Silly School Initialized! 🎈');
