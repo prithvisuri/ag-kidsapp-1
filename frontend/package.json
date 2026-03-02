@@ -7,10 +7,18 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "download-assets": "node scripts/download-assets.js"
+    "download-assets": "node scripts/download-assets.js",
+    "test:unit": "vitest --run",
+    "test": "npm run test:unit",
+    "test:watch": "vitest",
+    "coverage": "c8 --reporter=text vitest --run"
   },
   "devDependencies": {
-    "vite": "^7.3.1"
+    "@vitest/coverage-v8": "^4.0.18",
+    "c8": "^11.0.0",
+    "jsdom": "^28.1.0",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3"

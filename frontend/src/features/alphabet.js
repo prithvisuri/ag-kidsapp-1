@@ -30,6 +30,8 @@ const alphabet = [
     { letter: 'Z', word: 'Zebra', emoji: '🦓' }
 ];
 
+let currentIdx = 0;
+
 export function initAlphabet() {
     const grid = document.getElementById('alphabet-grid');
     const overlay = document.getElementById('alphabet-overlay');
@@ -38,21 +40,53 @@ export function initAlphabet() {
     // Clear grid
     grid.innerHTML = '';
 
-    alphabet.forEach(item => {
+    alphabet.forEach((item, index) => {
         const card = document.createElement('div');
         card.className = 'letter-card';
         card.innerText = item.letter;
-        card.onclick = () => showLetter(item);
+        card.onclick = (e) => {
+            e.currentTarget.classList.add('bouncing');
+            setTimeout(() => e.currentTarget.classList.remove('bouncing'), 500);
+            showLetter(item, index);
+        };
         grid.appendChild(card);
     });
 
     closeBtn.onclick = () => {
         overlay.classList.add('hidden');
     };
+
+    // Swipe Support for Overlay
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    overlay.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    overlay.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        const threshold = 50;
+        if (touchEndX < touchStartX - threshold) {
+            // Swipe Left -> Next Letter
+            currentIdx = (currentIdx + 1) % alphabet.length;
+            showLetter(alphabet[currentIdx], currentIdx);
+        }
+        if (touchEndX > touchStartX + threshold) {
+            // Swipe Right -> Prev Letter
+            currentIdx = (currentIdx - 1 + alphabet.length) % alphabet.length;
+            showLetter(alphabet[currentIdx], currentIdx);
+        }
+    }
 }
 
 
-function showLetter(item) {
+function showLetter(item, index) {
+    currentIdx = index;
     const overlay = document.getElementById('alphabet-overlay');
     document.getElementById('overlay-letter').innerText = item.letter;
     document.getElementById('overlay-word').innerText = `${item.letter} for ${item.word} ${item.emoji}`;

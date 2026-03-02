@@ -5,24 +5,26 @@ This plan outlines the roadmap for taking "Silly School" from a functional proto
 ## 🛠️ Phase 1: Advanced Development
 **Goal**: Enhance engagement and persistence.
 
-- [ ] **Supabase Integration**:
-    - [ ] Replace placeholder logic in `src/supabase.js` with real environment variables.
-    - [ ] Implement `upsert` in `addStar()` to save progress to a `profiles` table.
-    - [ ] Add basic "Continue Learning" functionality using session data.
-- [ ] **Gamification**:
-    - [ ] Add a "Level Up" animation when a child reaches 50 stars.
-    - [ ] Introduce unlockable badges for completing alphabet or math milestones.
-- [ ] **UI/UX Revisions**:
-    - [ ] Implement kid-safe swipe gestures for the alphabet grid.
-    - [ ] Add micro-interactions (bouncing buttons, confetti effects).
-    - [ ] Optimize for tablet/touch devices.
+- [x] **Supabase Integration**:
+    - [x] Replace placeholder logic in `src/supabase.js` with real environment variables.
+    - [x] Implement `upsert` in `addStar()` to save progress to a `profiles` table.
+    - [x] Add basic "Continue Learning" functionality using session data.
+- [x] **Gamification**:
+    - [x] Add a "Level Up" animation when a child reaches 50 stars.
+    - [x] Introduce unlockable badges for completing alphabet or math milestones.
+- [x] **UI/UX Revisions**:
+    - [x] Implement kid-safe swipe gestures for the alphabet grid.
+    - [x] Add micro-interactions (bouncing buttons, confetti effects).
+    - [x] Ensure spoken audio always uses a clear female voice (repeatable across sessions).
+    - [x] Aggressively filter out male voices and prioritize female voice selection across all devices.
+    - [x] Optimize for tablet/touch devices.
 
 ## 🧪 Phase 2: Comprehensive Testing
 **Goal**: Ensure stability and accessibility.
 
-- [ ] **Unit Testing**:
-    - [ ] Setup [Vitest](https://vitest.dev/) for testing math logic (`src/math.js`) and data structures.
-    - [ ] Write tests for random question generation to ensure edge cases (like division by zero) are impossible.
+- [x] **Unit Testing**:
+    - [x] Setup [Vitest](https://vitest.dev/) for testing math logic (`src/features/mathLogic.js`).
+    - [x] Write tests for random question generation to ensure edge cases (like division by zero) are impossible and coverage is above 80%.
 - [ ] **End-to-End (E2E) Testing**:
     - [ ] Setup [Playwright](https://playwright.dev/) to test navigation flows and interactive overlays.
 - [ ] **Accessibility (a11y) Audit**:

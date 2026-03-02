@@ -1,91 +1,102 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Silly School - Fun Learning for Kids!</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="app">
-      <header class="app-header">
-        <h1>Silly School 🎈</h1>
-        <div id="user-progress" class="hidden">
-           ⭐ <span id="stars-count">0</span>
-        </div>
-      </header>
-      
-      <main id="main-content">
-        <!-- Dynamic Content will be injected here -->
-        <div id="landing-page" class="page active">
-           <h2>What do you want to learn today?</h2>
-           <div class="card-grid">
-             <div class="card alphabet-card" data-target="alphabet">
-               <div class="card-icon">ABC</div>
-               <h3>Alphabets</h3>
-             </div>
-             <div class="card math-card" data-target="math">
-               <div class="card-icon">123</div>
-               <h3>Math Fun</h3>
-             </div>
-             <div class="card rhymes-card" data-target="rhymes">
-               <div class="card-icon">🎵</div>
-               <h3>Rhymes</h3>
-             </div>
-           </div>
-        </div>
 
-        <div id="alphabet-page" class="page hidden">
-          <button class="back-btn">⬅ Back</button>
-          <h2>Alphabet Zoo</h2>
-          <div id="alphabet-grid" class="grid-container"></div>
-          <div id="alphabet-overlay" class="overlay hidden">
-             <div class="overlay-content">
-                <span id="overlay-letter">A</span>
-                <img id="overlay-image" src="" alt="Word Image" class="hidden"> 
-                <p id="overlay-word">Apple</p>
-                <button id="close-overlay">❌</button>
-             </div>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Silly School - Fun Learning for Kids!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div id="app">
+    <header class="app-header">
+      <h1>Silly School 🎈</h1>
+      <div id="user-progress" class="hidden">
+        ⭐ <span id="stars-count">0</span>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <!-- Dynamic Content will be injected here -->
+      <div id="landing-page" class="page active">
+        <h2>What do you want to learn today?</h2>
+        <div class="card-grid">
+          <div class="card alphabet-card" data-target="alphabet">
+            <div class="card-icon">ABC</div>
+            <h3>Alphabets</h3>
+          </div>
+          <div class="card math-card" data-target="math">
+            <div class="card-icon">123</div>
+            <h3>Math Fun</h3>
+          </div>
+          <div class="card rhymes-card" data-target="rhymes">
+            <div class="card-icon">🎵</div>
+            <h3>Rhymes</h3>
           </div>
         </div>
+      </div>
 
-        <div id="math-page" class="page hidden">
-          <button class="back-btn">⬅ Back</button>
-          <h2>Math Magic</h2>
-          
-          <!-- New Numbers Section -->
-          <div class="numbers-section">
-            <h3>Learn Numbers</h3>
-            <div id="numbers-grid" class="grid-container"></div>
-          </div>
-
-          <h3>Math Quiz</h3>
-          <div class="math-controls">
-            <button class="op-btn" data-op="add">➕ Add</button>
-            <button class="op-btn" data-op="sub">➖ Subtract</button>
-            <button class="op-btn" data-op="mul">✖ Multiply</button>
-            <button class="op-btn" data-op="div">➗ Divide</button>
-          </div>
-          <div id="math-quiz" class="hidden">
-            <div class="question-box">
-               <span id="question-text">2 + 2 = ?</span>
-            </div>
-            <div id="answers-grid" class="answers-container"></div>
-            <div id="feedback-msg"></div>
+      <div id="alphabet-page" class="page hidden">
+        <button class="back-btn">⬅ Back</button>
+        <h2>Alphabet Zoo</h2>
+        <div id="alphabet-grid" class="grid-container"></div>
+        <div id="alphabet-overlay" class="overlay hidden">
+          <div class="overlay-content">
+            <span id="overlay-letter">A</span>
+            <img id="overlay-image" src="" alt="Word Image" class="hidden">
+            <p id="overlay-word">Apple</p>
+            <button id="close-overlay">❌</button>
           </div>
         </div>
+      </div>
 
+      <div id="math-page" class="page hidden">
+        <button class="back-btn">⬅ Back</button>
+        <h2>Math Magic</h2>
+
+        <!-- New Numbers Section -->
+        <div class="numbers-section">
+          <h3>Learn Numbers</h3>
+          <div id="numbers-grid" class="grid-container"></div>
+        </div>
+
+        <h3>Math Quiz</h3>
+        <div class="math-controls">
+          <button class="op-btn" data-op="add">➕ Add</button>
+          <button class="op-btn" data-op="sub">➖ Subtract</button>
+          <button class="op-btn" data-op="mul">✖ Multiply</button>
+          <button class="op-btn" data-op="div">➗ Divide</button>
+        </div>
+        <div id="math-quiz" class="hidden">
+          <div class="question-box">
+            <span id="question-text">2 + 2 = ?</span>
+          </div>
+          <div id="answers-grid" class="answers-container"></div>
+          <div id="feedback-msg"></div>
+        </div>
         <div id="rhymes-page" class="page hidden">
           <button class="back-btn">⬅ Back</button>
           <h2>Sing Along!</h2>
           <div id="video-list" class="video-grid"></div>
         </div>
 
-      </main>
-    </div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+        <div id="level-up-overlay" class="overlay hidden">
+          <div class="overlay-content level-up-content">
+            <div class="emoji-shower">🎉 🌟 🎈 🏆 🌟 🎉</div>
+            <h2 class="level-up-title">SUPER STAR!</h2>
+            <p>You reached <span id="milestone-stars">50</span> stars!</p>
+            <div id="badge-display" class="badge-icon">⭐</div>
+            <button id="close-level-up" class="action-btn">Keep Going!</button>
+          </div>
+        </div>
+
+    </main>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
 </html>

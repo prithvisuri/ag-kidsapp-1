@@ -1,6 +1,7 @@
 
 import { addStar } from '../services/supabase.js';
 import { speak } from '../utils/speech.js';
+import { generateQuestionData, generateAnswers as makeAnswers, isCorrect } from './mathLogic.js';
 
 let currentOp = 'add';
 let currentQuestion = {};
@@ -36,14 +37,19 @@ function initNumbers() {
         const card = document.createElement('div');
         card.className = 'number-card';
         card.innerText = i;
-        card.onclick = () => speakNumber(i);
+        card.onclick = (e) => {
+            e.currentTarget.classList.add('bouncing');
+            setTimeout(() => e.currentTarget.classList.remove('bouncing'), 500);
+            speakNumber(i);
+        };
         grid.appendChild(card);
     }
 }
 
 
 function speakNumber(num) {
-    speak(num.toString(), null, { isKid: true, pitch: 1.6, rate: 1.0 });
+    // Use lower pitch (1.2) and slower rate (0.8) for clear, distinct pronunciation
+    speak(num.toString(), null, { isKid: false, pitch: 1.2, rate: 0.8 });
 }
 
 function startQuiz() {
@@ -52,35 +58,7 @@ function startQuiz() {
 }
 
 function generateQuestion() {
-    let a, b, answer, symbol;
-
-    switch (currentOp) {
-        case 'add':
-            a = Math.floor(Math.random() * 10) + 1;
-            b = Math.floor(Math.random() * 10) + 1;
-            answer = a + b;
-            symbol = '+';
-            break;
-        case 'sub':
-            a = Math.floor(Math.random() * 10) + 5; // Ensure positive result
-            b = Math.floor(Math.random() * a);
-            answer = a - b;
-            symbol = '-';
-            break;
-        case 'mul':
-            a = Math.floor(Math.random() * 5) + 1; // Keep numbers small
-            b = Math.floor(Math.random() * 5) + 1;
-            answer = a * b;
-            symbol = '×';
-            break;
-        case 'div':
-            b = Math.floor(Math.random() * 5) + 1;
-            answer = Math.floor(Math.random() * 5) + 1;
-            a = b * answer; // Ensure clean division
-            symbol = '÷';
-            break;
-    }
-
+    const { a, b, answer, symbol } = generateQuestionData(currentOp);
     currentQuestion = { a, b, answer, symbol };
 
     document.getElementById('question-text').innerText = `${a} ${symbol} ${b} = ?`;
@@ -93,33 +71,50 @@ function generateAnswers(correctAnswer) {
     const grid = document.getElementById('answers-grid');
     grid.innerHTML = '';
 
-    // Generate 3 wrong answers
-    let answers = new Set();
-    answers.add(correctAnswer);
-
-    while (answers.size < 4) {
-        let wrong = correctAnswer + Math.floor(Math.random() * 10) - 5;
-        if (wrong >= 0 && wrong !== correctAnswer) {
-            answers.add(wrong);
-        }
-    }
-
-    const shuffledArr = Array.from(answers).sort(() => Math.random() - 0.5);
+    const shuffledArr = makeAnswers(correctAnswer);
 
     shuffledArr.forEach(ans => {
         const btn = document.createElement('button');
         btn.className = 'answer-btn';
         btn.innerText = ans;
-        btn.onclick = () => checkAnswer(ans, correctAnswer, btn);
+        btn.onclick = (e) => {
+            e.currentTarget.classList.add('bouncing');
+            setTimeout(() => e.currentTarget.classList.remove('bouncing'), 500);
+            checkAnswer(ans, correctAnswer, btn);
+        };
         grid.appendChild(btn);
     });
+}
+
+function triggerConfetti() {
+    const app = document.getElementById('app');
+    for (let i = 0; i < 20; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
+        confetti.style.opacity = '1';
+        confetti.style.top = '-10px';
+        app.appendChild(confetti);
+
+        const animation = confetti.animate([
+            { transform: 'translateY(0) rotate(0)', opacity: 1 },
+            { transform: `translateY(100vh) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+        ], {
+            duration: 1000 + Math.random() * 2000,
+            easing: 'cubic-bezier(0, .9, .57, 1)'
+        });
+
+        animation.onfinish = () => confetti.remove();
+    }
 }
 
 function checkAnswer(selected, correct, btnElement) {
     if (selected === correct) {
         btnElement.classList.add('correct');
         document.getElementById('feedback-msg').innerText = 'Yay! Correct! 🎉';
-        addStar(); // Confetti or celebration here
+        triggerConfetti();
+        addStar();
         setTimeout(generateQuestion, 1500);
     } else {
         btnElement.classList.add('wrong');

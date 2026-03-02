@@ -1,20 +1,54 @@
 
+// helper that chooses the preferred voice from a list, favoring female/kid voices
+export function chooseVoice(voices = []) {
+    if (!voices || voices.length === 0) return undefined;
+    
+    const lower = (s) => (s || '').toLowerCase();
+    
+    // Step 1: Filter out obvious male voices
+    let candidates = voices.filter(v => {
+        const name = lower(v.name);
+        return !name.includes('male') && !name.includes('man') && !name.includes('boy');
+    });
+    
+    // If all voices are male, use original list
+    if (candidates.length === 0) candidates = voices;
+    
+    // Step 2: Look for specific female voice keywords in priority order
+    const searchTerms = [
+        'google us english female',
+        'google us english',
+        'zira',
+        'victoria',
+        'samantha',
+        'female',
+        'woman',
+        'girl',
+    ];
+    
+    for (const term of searchTerms) {
+        const found = candidates.find(v => lower(v.name).includes(term));
+        if (found) return found;
+    }
+    
+    // Step 3: Fallback to first non-male voice
+    return candidates[0] || voices[0];
+}
+
 export function speak(text, onEndCallback, options = {}) {
     const { isKid = false, pitch, rate } = options;
 
-    if ('speechSynthesis' in window) {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+        // nothing we can do in non-browser environments
+        return;
+    }
+
+    const doSpeak = () => {
         window.speechSynthesis.cancel();
 
         const utterance = new SpeechSynthesisUtterance(text);
-
-        // Voice Selection Logic
         const voices = window.speechSynthesis.getVoices();
-
-        // Try to find a clear female voice or kid-sounding voice
-        let selectedVoice = voices.find(v => v.name.includes('Google US English'));
-        if (!selectedVoice) selectedVoice = voices.find(v => v.name.includes('Zira')); // Windows
-        if (!selectedVoice) selectedVoice = voices.find(v => v.name.includes('Female'));
-
+        const selectedVoice = chooseVoice(voices);
         if (selectedVoice) {
             utterance.voice = selectedVoice;
         }
@@ -32,5 +66,18 @@ export function speak(text, onEndCallback, options = {}) {
         }
 
         window.speechSynthesis.speak(utterance);
+    };
+
+    // voices may not be loaded on first call, so wait for them
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) {
+        // add one-time listener
+        const handler = () => {
+            window.speechSynthesis.removeEventListener('voiceschanged', handler);
+            doSpeak();
+        };
+        window.speechSynthesis.addEventListener('voiceschanged', handler);
+    } else {
+        doSpeak();
     }
 }
