@@ -1,16 +1,14 @@
 
 import { addStar } from '../services/supabase.js';
 import { speak } from '../utils/speech.js';
-import { generateQuestionData, generateAnswers as makeAnswers, isCorrect } from './mathLogic.js';
+import { generateQuestionData, generateAnswers as makeAnswers } from './mathLogic.js';
 
 let currentOp = 'add';
-let currentQuestion = {};
 
 export function initMath() {
     initNumbers();
 
     const opBtns = document.querySelectorAll('.op-btn');
-    const answersGrid = document.getElementById('answers-grid');
 
     opBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -38,8 +36,9 @@ function initNumbers() {
         card.className = 'number-card';
         card.innerText = i;
         card.onclick = (e) => {
-            e.currentTarget.classList.add('bouncing');
-            setTimeout(() => e.currentTarget.classList.remove('bouncing'), 500);
+            const target = e.currentTarget;
+            target.classList.add('bouncing');
+            setTimeout(() => target.classList.remove('bouncing'), 500);
             speakNumber(i);
         };
         grid.appendChild(card);
@@ -53,22 +52,27 @@ function speakNumber(num) {
 }
 
 function startQuiz() {
-    document.getElementById('math-quiz').classList.remove('hidden');
+    const quiz = document.getElementById('math-quiz');
+    if (!quiz) return;
+    quiz.classList.remove('hidden');
     generateQuestion();
 }
 
 function generateQuestion() {
     const { a, b, answer, symbol } = generateQuestionData(currentOp);
-    currentQuestion = { a, b, answer, symbol };
+    const questionText = document.getElementById('question-text');
+    const feedbackMsg = document.getElementById('feedback-msg');
+    if (!questionText || !feedbackMsg) return;
 
-    document.getElementById('question-text').innerText = `${a} ${symbol} ${b} = ?`;
-    document.getElementById('feedback-msg').innerText = '';
+    questionText.innerText = `${a} ${symbol} ${b} = ?`;
+    feedbackMsg.innerText = '';
 
     generateAnswers(answer);
 }
 
 function generateAnswers(correctAnswer) {
     const grid = document.getElementById('answers-grid');
+    if (!grid) return;
     grid.innerHTML = '';
 
     const shuffledArr = makeAnswers(correctAnswer);
@@ -78,8 +82,9 @@ function generateAnswers(correctAnswer) {
         btn.className = 'answer-btn';
         btn.innerText = ans;
         btn.onclick = (e) => {
-            e.currentTarget.classList.add('bouncing');
-            setTimeout(() => e.currentTarget.classList.remove('bouncing'), 500);
+            const target = e.currentTarget;
+            target.classList.add('bouncing');
+            setTimeout(() => target.classList.remove('bouncing'), 500);
             checkAnswer(ans, correctAnswer, btn);
         };
         grid.appendChild(btn);
@@ -88,6 +93,7 @@ function generateAnswers(correctAnswer) {
 
 function triggerConfetti() {
     const app = document.getElementById('app');
+    if (!app) return;
     for (let i = 0; i < 20; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
@@ -110,14 +116,16 @@ function triggerConfetti() {
 }
 
 function checkAnswer(selected, correct, btnElement) {
+    const feedbackMsg = document.getElementById('feedback-msg');
+    if (!feedbackMsg) return;
     if (selected === correct) {
         btnElement.classList.add('correct');
-        document.getElementById('feedback-msg').innerText = 'Yay! Correct! 🎉';
+        feedbackMsg.innerText = 'Yay! Correct! 🎉';
         triggerConfetti();
         addStar();
         setTimeout(generateQuestion, 1500);
     } else {
         btnElement.classList.add('wrong');
-        document.getElementById('feedback-msg').innerText = 'Try again! 🙃';
+        feedbackMsg.innerText = 'Try again! 🙃';
     }
 }

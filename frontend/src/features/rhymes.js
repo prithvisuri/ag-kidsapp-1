@@ -17,6 +17,7 @@ const rhymes = [
 
 export function initRhymes() {
   const grid = document.getElementById('video-list');
+  if (!grid) return;
   grid.innerHTML = '';
 
   rhymes.forEach(rhyme => {

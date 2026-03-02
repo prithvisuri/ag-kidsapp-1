@@ -3,9 +3,30 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+function hasValidSupabaseConfig(url, key) {
+    if (!url || !key) return false;
+    if (url.includes('xyzcompany.supabase.co')) return false;
+    if (key === 'public-anon-key') return false;
+    return true;
+}
+
+let warnedMissingConfig = false;
+export const supabase = hasValidSupabaseConfig(supabaseUrl, supabaseKey)
+    ? createClient(supabaseUrl, supabaseKey)
+    : null;
+
+function warnMissingSupabaseConfig() {
+    if (warnedMissingConfig) return;
+    warnedMissingConfig = true;
+    console.warn('Supabase is disabled: missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY');
+}
 
 export async function initSupabase() {
+    if (!supabase) {
+        warnMissingSupabaseConfig();
+        return null;
+    }
+
     const { data: { session }, error } = await supabase.auth.getSession();
 
     if (error) {
@@ -29,7 +50,7 @@ export async function initSupabase() {
             const starsEl = document.getElementById('stars-count');
             if (starsEl) {
                 starsEl.innerText = data.stars || 0;
-                if (data.stars > 0) {
+                if (data.stars > 0 && starsEl.parentElement) {
                     starsEl.parentElement.classList.remove('hidden');
                 }
             }
@@ -46,9 +67,18 @@ export async function addStar() {
     let currentStars = 0;
 
     if (starsEl) {
-        currentStars = parseInt(starsEl.innerText) + 1;
+        const prior = Number.parseInt(starsEl.innerText, 10);
+        currentStars = Number.isFinite(prior) ? prior + 1 : 1;
         starsEl.innerText = currentStars;
-        starsEl.parentElement.classList.remove('hidden');
+        if (starsEl.parentElement) {
+            starsEl.parentElement.classList.remove('hidden');
+        }
+    }
+
+    if (!supabase) {
+        warnMissingSupabaseConfig();
+        checkStarMilestones(currentStars);
+        return;
     }
 
     const { data: { session } } = await supabase.auth.getSession();
@@ -80,7 +110,7 @@ function checkStarMilestones(stars) {
     const badgeDisplay = document.getElementById('badge-display');
     const closeBtn = document.getElementById('close-level-up');
 
-    if (!levelUpOverlay) return;
+    if (!levelUpOverlay || !milestoneStars || !badgeDisplay || !closeBtn) return;
 
     // Trigger level up at 10, 25, 50, 100 stars
     const milestones = [10, 25, 50, 100];
@@ -99,9 +129,9 @@ function checkStarMilestones(stars) {
 
         // Add a "bouncing" class to the button
         const starsEl = document.getElementById('stars-count');
-        if (starsEl) starsEl.parentElement.classList.add('bouncing');
+        if (starsEl && starsEl.parentElement) starsEl.parentElement.classList.add('bouncing');
         setTimeout(() => {
-            if (starsEl) starsEl.parentElement.classList.remove('bouncing');
+            if (starsEl && starsEl.parentElement) starsEl.parentElement.classList.remove('bouncing');
         }, 1000);
 
         closeBtn.onclick = () => {

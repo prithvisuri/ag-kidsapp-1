@@ -1,53 +1,57 @@
 # Silly School - Development Action Plan
 
-This plan outlines the roadmap for taking "Silly School" from a functional prototype to a robust, production-ready educational platform.
+This plan tracks what has been completed and what remains to move Silly School from prototype to production-ready.
 
-## 🛠️ Phase 1: Advanced Development
-**Goal**: Enhance engagement and persistence.
+## Phase 1: Core Product and Stability
+Goal: Deliver stable, engaging learning flows with resilient runtime behavior.
 
-- [x] **Supabase Integration**:
-    - [x] Replace placeholder logic in `src/supabase.js` with real environment variables.
-    - [x] Implement `upsert` in `addStar()` to save progress to a `profiles` table.
-    - [x] Add basic "Continue Learning" functionality using session data.
-- [x] **Gamification**:
-    - [x] Add a "Level Up" animation when a child reaches 50 stars.
-    - [x] Introduce unlockable badges for completing alphabet or math milestones.
-- [x] **UI/UX Revisions**:
-    - [x] Implement kid-safe swipe gestures for the alphabet grid.
-    - [x] Add micro-interactions (bouncing buttons, confetti effects).
-    - [x] Ensure spoken audio always uses a clear female voice (repeatable across sessions).
-    - [x] Aggressively filter out male voices and prioritize female voice selection across all devices.
-    - [x] Optimize for tablet/touch devices.
+- [x] Supabase integration for progress stars (`profiles` upsert/read).
+- [x] Safe Supabase fallback mode when env config is missing or placeholder.
+- [x] Star milestone overlays (10, 25, 50, 100) and badge progression.
+- [x] Alphabet swipe gestures and overlay interactions.
+- [x] Confetti and bounce micro-interactions for learning feedback.
+- [x] Audio voice selection and TTS fallback behavior.
+- [x] Fix top-level page navigation structure (landing/alphabet/math/rhymes as siblings).
+- [x] Add DOM null-safety guards across feature initialization paths.
+- [x] Prevent invalid `NaN` star states by using safe numeric parsing.
+- [x] Improve asset downloader reliability (HTTP status checks, completion tracking, error exit code).
 
-## 🧪 Phase 2: Comprehensive Testing
-**Goal**: Ensure stability and accessibility.
+## Phase 2: Testing and Quality Gates
+Goal: Make regressions difficult and enforce measurable quality.
 
-- [x] **Unit Testing**:
-    - [x] Setup [Vitest](https://vitest.dev/) for testing math logic (`src/features/mathLogic.js`).
-    - [x] Write tests for random question generation to ensure edge cases (like division by zero) are impossible and coverage is above 80%.
-- [ ] **End-to-End (E2E) Testing**:
-    - [ ] Setup [Playwright](https://playwright.dev/) to test navigation flows and interactive overlays.
-- [ ] **Accessibility (a11y) Audit**:
-    - [ ] Use `axe-core` to ensure the app is usable by children with various accessibility needs.
-    - [ ] Verify ARIA labels for non-text interactive elements (emojis, icons).
+- [x] Unit tests for pure logic (`mathLogic`, `speech`).
+- [x] Integration tests for navigation and page structure.
+- [x] Feature tests for alphabet, math, and rhymes DOM behavior.
+- [x] Supabase tests for fallback mode and configured mode.
+- [x] Coverage command fixed to native Vitest coverage.
+- [x] Coverage thresholds enforced in Vitest config.
+- [x] Achieve and verify global coverage target >= 80%.
+  - Latest snapshot: Statements 94.36%, Branches 81.45%, Functions 91.66%, Lines 98.65%.
+- [ ] End-to-End (E2E) tests with Playwright for full browser flows.
+- [ ] Accessibility audit (`axe-core`, keyboard flow, aria labels for non-text controls).
 
-## 🚀 Phase 3: CI/CD & Production
-**Goal**: Automate deployment and monitor health.
+## Phase 3: CI/CD and Operations
+Goal: Automate confidence and deployment lifecycle.
 
-- [ ] **GitHub Actions Workflow**:
-    - [ ] Create `.github/workflows/main.yml`.
-    - [ ] **Jobs**: Linting -> Testing (Vitest + Playwright) -> Docker Build -> Push to Registry.
-- [ ] **Multi-Environment Strategy**:
-    - [ ] **Staging**: Auto-deploy on `develop` branch to a temporary URL.
-    - [ ] **Production**: Manual approval or tagged release to `sillyschool.com`.
-- [ ] **Monitoring & Analytics**:
-    - [ ] Enable Supabase Edge Functions for basic usage analytics.
-    - [ ] Set up error reporting (e.g., Sentry) to catch client-side bugs.
+- [ ] Create GitHub Actions pipeline:
+  - [ ] Lint
+  - [ ] Unit/Integration tests
+  - [ ] Coverage gate
+  - [ ] Build
+  - [ ] (Future) E2E tests
+- [ ] Add linting setup (ESLint) with unused-import/unused-variable checks.
+- [ ] Add backend test harness when backend logic is implemented.
+- [ ] Define staging + production promotion strategy.
+- [ ] Add runtime monitoring and client error reporting.
 
-## 📌 Implementation Timeline (Estimated)
-| Week | Focus | Major Milestone |
-| :--- | :--- | :--- |
-| **Week 1** | Data Persistence | Real Stars saved to Supabase |
-| **Week 2** | Polish & Gamification | Badge system & Animations |
-| **Week 3** | Automated Testing | CI Pipeline with 80% coverage |
-| **Week 4** | Production Launch | Live on custom domain with SSL |
+## Current Status Summary
+- Frontend tests: 44 passing.
+- Frontend build: passing.
+- Coverage gate: passing with enforced thresholds.
+- Backend: placeholder service only (no business logic/tests yet).
+
+## Immediate Next Priorities
+1. Add Playwright E2E suite for critical child flows (navigation, quiz, star milestones).
+2. Add accessibility checks and fix findings.
+3. Add CI workflow to run tests, coverage, and build on every PR.
+4. Introduce ESLint and fail PRs on hygiene issues.

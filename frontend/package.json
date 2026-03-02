@@ -11,7 +11,7 @@
     "test:unit": "vitest --run",
     "test": "npm run test:unit",
     "test:watch": "vitest",
-    "coverage": "c8 --reporter=text vitest --run"
+    "coverage": "vitest --run --coverage"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.18",

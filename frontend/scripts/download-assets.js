@@ -17,20 +17,49 @@ if (!fs.existsSync(targetDir)) {
 
 console.log(`Downloading assets to ${targetDir}...`);
 
-letters.forEach(letter => {
+function downloadFile(letter) {
     const filename = `${letter}.mp3`;
     const fileUrl = `${baseUrl}${filename}`;
     const filePath = path.join(targetDir, filename);
 
-    const file = fs.createWriteStream(filePath);
-    https.get(fileUrl, function (response) {
-        response.pipe(file);
-        file.on('finish', function () {
-            file.close();
-            // console.log(`Downloaded ${filename}`);
+    return new Promise((resolve, reject) => {
+        const request = https.get(fileUrl, (response) => {
+            if (response.statusCode !== 200) {
+                response.resume();
+                reject(new Error(`${filename}: unexpected status ${response.statusCode}`));
+                return;
+            }
+
+            const file = fs.createWriteStream(filePath);
+            response.pipe(file);
+
+            file.on('finish', () => {
+                file.close(() => resolve(filename));
+            });
+
+            file.on('error', (err) => {
+                fs.unlink(filePath, () => { });
+                reject(new Error(`${filename}: ${err.message}`));
+            });
         });
-    }).on('error', function (err) {
-        fs.unlink(filePath, () => { });
-        console.error(`Error downloading ${filename}: ${err.message}`);
+
+        request.on('error', (err) => {
+            fs.unlink(filePath, () => { });
+            reject(new Error(`${filename}: ${err.message}`));
+        });
     });
+}
+
+const results = await Promise.allSettled(letters.map(downloadFile));
+const successes = results.filter(result => result.status === 'fulfilled').length;
+const failures = results.filter(result => result.status === 'rejected');
+
+failures.forEach((failure) => {
+    console.error(`Download error: ${failure.reason.message}`);
 });
+
+console.log(`Downloaded ${successes}/${letters.length} sound files.`);
+
+if (failures.length > 0) {
+    process.exitCode = 1;
+}

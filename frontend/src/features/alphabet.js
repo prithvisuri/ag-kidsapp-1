@@ -12,7 +12,7 @@ const alphabet = [
     { letter: 'H', word: 'House', emoji: '🏠' },
     { letter: 'I', word: 'Ice Cream', emoji: '🍦' },
     { letter: 'J', word: 'Jelly', emoji: '🍮' },
-    { letter: 'K', word: 'Kite', emoji: 'Vk' },
+    { letter: 'K', word: 'Kite', emoji: '🪁' },
     { letter: 'L', word: 'Lion', emoji: '🦁' },
     { letter: 'M', word: 'Monkey', emoji: '🐵' },
     { letter: 'N', word: 'Nest', emoji: '🪺' },
@@ -36,6 +36,7 @@ export function initAlphabet() {
     const grid = document.getElementById('alphabet-grid');
     const overlay = document.getElementById('alphabet-overlay');
     const closeBtn = document.getElementById('close-overlay');
+    if (!grid || !overlay || !closeBtn) return;
 
     // Clear grid
     grid.innerHTML = '';
@@ -45,8 +46,9 @@ export function initAlphabet() {
         card.className = 'letter-card';
         card.innerText = item.letter;
         card.onclick = (e) => {
-            e.currentTarget.classList.add('bouncing');
-            setTimeout(() => e.currentTarget.classList.remove('bouncing'), 500);
+            const target = e.currentTarget;
+            target.classList.add('bouncing');
+            setTimeout(() => target.classList.remove('bouncing'), 500);
             showLetter(item, index);
         };
         grid.appendChild(card);
@@ -88,8 +90,11 @@ export function initAlphabet() {
 function showLetter(item, index) {
     currentIdx = index;
     const overlay = document.getElementById('alphabet-overlay');
-    document.getElementById('overlay-letter').innerText = item.letter;
-    document.getElementById('overlay-word').innerText = `${item.letter} for ${item.word} ${item.emoji}`;
+    const letterEl = document.getElementById('overlay-letter');
+    const wordEl = document.getElementById('overlay-word');
+    if (!overlay || !letterEl || !wordEl) return;
+    letterEl.innerText = item.letter;
+    wordEl.innerText = `${item.letter} for ${item.word} ${item.emoji}`;
 
     overlay.classList.remove('hidden');
 

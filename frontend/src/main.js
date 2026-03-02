@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setupNavigation() {
-  const landingPage = document.getElementById('landing-page');
   const pages = document.querySelectorAll('.page');
   const backBtns = document.querySelectorAll('.back-btn');
 
@@ -39,7 +38,9 @@ function setupNavigation() {
 
   function navigateTo(pageId) {
     pages.forEach(p => p.classList.add('hidden'));
-    document.getElementById(pageId).classList.remove('hidden');
+    const targetPage = document.getElementById(pageId);
+    if (!targetPage) return;
+    targetPage.classList.remove('hidden');
 
     // Reset specific page states if needed
     if (pageId === 'landing-page') {

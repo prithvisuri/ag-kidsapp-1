@@ -1,81 +1,111 @@
 # Silly School - Project Documentation
 
-Silly School is a vibrant, interactive web application designed to help kids learn alphabets, math, and enjoy nursery rhymes in a fun and engaging way.
+Silly School is an interactive learning web app for kids, focused on alphabets, early math, and nursery rhymes with playful visuals and guided audio feedback.
 
-## 🚀 Tech Stack
+## Tech Stack
+- Frontend: Vite + Vanilla JavaScript (ES modules)
+- Styling: Vanilla CSS
+- Data/Auth: Supabase (`@supabase/supabase-js`)
+- Testing: Vitest + jsdom + V8 coverage
+- Container/Web Serve: Docker + Nginx (frontend)
 
-- **Frontend Framework**: [Vite](https://vitejs.dev/) (Fast development server and bundler)
-- **Language**: Vanilla JavaScript (ES Modules)
-- **Styling**: Vanilla CSS (Custom properties, animations, responsive design)
-- **Backend / Database**: [Supabase](https://supabase.com/) (Used for progress tracking/stars)
-- **Speech Synthesis**: Browser's Native SpeechSynthesis API (for TTS support)
-
-## ✨ Core Features
+## Core Features
 
 ### 1. Alphabet Zoo
-- **Interactive Grid**: Kids can explore the alphabet through a colorful grid of letters.
-- **Visual Learning**: Each letter shows a corresponding word and emoji (e.g., A for Apple 🍎).
-- **Audio Support**: Plays MP3 sounds for each letter with a Text-to-Speech (TTS) fallback.
-- **Kid-Friendly UI**: High-contrast letters and smooth overlays.
+- Interactive alphabet cards (A-Z)
+- Overlay with letter, word, and emoji mapping
+- MP3 playback with TTS fallback
+- Swipe navigation in overlay
 
 ### 2. Math Magic
-- **Number Learning**: A grid of numbers from 1 to 20 with interactive audio feedback.
-- **Dynamic Math Quiz**: Generates random problems for Addition, Subtraction, Multiplication, and Division.
-- **Difficulty Scaling**: Numbers are kept small for kids, and subtraction ensures positive results.
-- **Instant Feedback**: Fun success messages and star tracking for correct answers.
+- Number cards 1-20 with spoken feedback
+- Quiz operations: add, subtract, multiply, divide
+- Correct-answer celebration (confetti + star award)
+- Milestone badges and level-up overlay
 
-### 3. Rhymes Section
-- **Video Library**: Curated list of popular nursery rhymes (Twinkle Twinkle, Baby Shark, etc.).
-- **Safe Embedding**: Uses YouTube Iframe API for safe and controlled viewing.
-- **Easy Navigation**: Simple grid layout for selecting favorite rhymes.
+### 3. Rhymes
+- Embedded YouTube rhyme catalog
+- Simple card-based browsing experience
 
-## 📁 Project Structure
+### 4. Progress Tracking
+- Stars persisted to Supabase profiles when configured
+- Safe local fallback mode when Supabase env config is missing
+- Defensive handling for invalid/missing DOM and malformed star values
 
+## Quality and Testing
+- Test suite includes unit + feature/integration coverage:
+  - Navigation and HTML page-structure tests
+  - Alphabet/math/rhymes interaction tests
+  - Supabase fallback and configured-mode tests
+- Latest validation:
+  - `npm test`: 44 tests passing
+  - `npm run coverage`: thresholds enforced and passing
+  - `npm run build`: passing
+- Coverage snapshot:
+  - Statements: 94.36%
+  - Branches: 81.45%
+  - Functions: 91.66%
+  - Lines: 98.65%
+
+## Project Structure
 ```text
 .
-├── frontend/            # Web Application (Vite/Vanilla JS)
+├── frontend/
 │   ├── Dockerfile
-│   ├── docker/          # Nginx config
+│   ├── docker/                  # Nginx config
 │   ├── index.html
 │   ├── package.json
 │   ├── public/
-│   ├── scripts/         # Asset download script
-│   └── src/             # Features, Services, Utils, Styles
-├── backend/             # Future API / Server Logic
-│   ├── package.json
+│   │   └── assets/sounds/
+│   ├── scripts/
+│   │   └── download-assets.js
 │   └── src/
-│       └── index.js
-├── docker-compose.yml   # Web service orchestration
-├── PROJECT_INFO.md
+│       ├── features/
+│       ├── services/
+│       ├── styles/
+│       └── utils/
+├── backend/
+│   ├── package.json
+│   └── src/index.js             # Placeholder backend entry
 ├── ACTION_PLAN.md
+├── code_review.md
+├── PROJECT_INFO.md
 └── DEPLOYMENT.md
 ```
 
-## 🛠️ Setup and Installation
+## Local Development
+1. Install root dependencies (if needed):
+```bash
+npm install
+```
+2. Install frontend dependencies:
+```bash
+cd frontend && npm install
+```
+3. Run frontend dev server:
+```bash
+npm run dev
+```
+4. Run tests:
+```bash
+npm test
+```
+5. Run coverage:
+```bash
+npm run coverage
+```
 
-### Local Development
-1. **Clone the repository**:
-   ```bash
-   git clone <repo-url>
-   cd ag-kidsapp-1
-   ```
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-3. **Download assets**:
-   ```bash
-   node download-assets.js
-   ```
-4. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
+## Asset Download
+From `frontend/`:
+```bash
+npm run download-assets
+```
+The script now validates HTTP status codes and exits non-zero on failed downloads.
 
-### Deployment
-Refer to [DEPLOYMENT.md](file:///home/siya/projects/ag-kidsapp-1/DEPLOYMENT.md) for detailed AWS CodeBuild and Elastic Beanstalk instructions, or use the [Dockerfile](file:///home/siya/projects/ag-kidsapp-1/Dockerfile) for containerized hosting.
+## Deployment
+See `DEPLOYMENT.md` for deployment options and environment details.
 
-## 🎨 Design Philosophy
-- **Rich Aesthetics**: Vibrant HSL-based colors, rounded corners, and "pop-in" animations.
-- **Accessibility**: Large fonts, intuitive icons, and speech synthesis.
-- **Safety**: Prevents text selection and uses safe video embeds to ensure a kid-friendly environment.
+## Known Gaps
+- No Playwright E2E tests yet
+- No completed accessibility audit yet
+- Backend business logic and tests are still pending
