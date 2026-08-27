@@ -21,9 +21,10 @@ stages:
       vmImage: ubuntu-latest
     steps:
     - 
-- task: Docker@2
+- 
+- task: DockerCompose@1
   inputs:
-    containerRegistry: 'docker-azure'
-    repository: 'prithvisuri'
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: 'docker-azure'
+    dockerComposeFile: '**/docker-compose.yml'
+    action: 'Run a Docker Compose command'
