@@ -20,53 +20,38 @@ Silly School is an interactive learning web app for kids, focused on alphabets, 
 ### 2. Math Magic
 - Number cards 1-20 with spoken feedback
 - Quiz operations: add, subtract, multiply, divide
-- Correct-answer celebration (confetti + star award)
-- Milestone badges and level-up overlay
-
-### 3. Rhymes
-- Embedded YouTube rhyme catalog
-- Simple card-based browsing experience
-
-### 4. Progress Tracking
-- Stars persisted to Supabase profiles when configured
-- Safe local fallback mode when Supabase env config is missing
-- Defensive handling for invalid/missing DOM and malformed star values
-
-## Quality and Testing
-- Test suite includes unit + feature/integration coverage:
-  - Navigation and HTML page-structure tests
-  - Alphabet/math/rhymes interaction tests
-  - Supabase fallback and configured-mode tests
+├── Dockerfile
+├── docker/                      # Nginx config
+├── index.html
+├── package.json
+├── public/
+│   └── assets/sounds/
+├── scripts/
+│   └── download-assets.js
+└── src/
+  ├── features/
+  ├── services/
+  ├── styles/
+  └── utils/
 - Latest validation:
-  - `npm test`: 44 tests passing
+1. Install dependencies:
   - `npm run coverage`: thresholds enforced and passing
   - `npm run build`: passing
-- Coverage snapshot:
-  - Statements: 94.36%
-  - Branches: 81.45%
-  - Functions: 91.66%
-  - Lines: 98.65%
-
 ## Project Structure
 ```text
-.
-├── frontend/
-│   ├── Dockerfile
-│   ├── docker/                  # Nginx config
-│   ├── index.html
-│   ├── package.json
-│   ├── public/
-│   │   └── assets/sounds/
-│   ├── scripts/
-│   │   └── download-assets.js
-│   └── src/
-│       ├── features/
-│       ├── services/
-│       ├── styles/
-│       └── utils/
-├── backend/
-│   ├── package.json
-│   └── src/index.js             # Placeholder backend entry
+├── Dockerfile
+├── docker/                      # Nginx config
+├── index.html
+├── package.json
+├── public/
+│   └── assets/sounds/
+├── scripts/
+│   └── download-assets.js
+└── src/
+  ├── features/
+  ├── services/
+  ├── styles/
+  └── utils/
 ├── ACTION_PLAN.md
 ├── code_review.md
 ├── PROJECT_INFO.md
@@ -74,29 +59,25 @@ Silly School is an interactive learning web app for kids, focused on alphabets, 
 ```
 
 ## Local Development
-1. Install root dependencies (if needed):
+1. Install dependencies:
 ```bash
 npm install
 ```
-2. Install frontend dependencies:
-```bash
-cd frontend && npm install
-```
-3. Run frontend dev server:
+2. Run the development server:
 ```bash
 npm run dev
 ```
-4. Run tests:
+3. Run tests:
 ```bash
 npm test
 ```
-5. Run coverage:
+4. Run coverage:
 ```bash
 npm run coverage
 ```
 
 ## Asset Download
-From `frontend/`:
+From the repository root:
 ```bash
 npm run download-assets
 ```
@@ -108,4 +89,3 @@ See `DEPLOYMENT.md` for deployment options and environment details.
 ## Known Gaps
 - No Playwright E2E tests yet
 - No completed accessibility audit yet
-- Backend business logic and tests are still pending

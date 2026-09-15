@@ -6,13 +6,13 @@ const rhymes = [
   { title: 'Old MacDonald Had a Farm', id: '_6HzoUcx3eo' },
   { title: 'Johny Johny Yes Papa', id: 'F4tHL8reNCs' },
   { title: 'ABC Song', id: '75p-N9YKqNo' },
-  { title: 'Row Row Row Your Boat', id: '7otAJa3jui8' }, // ChuChu TV
-  { title: 'Humpty Dumpty', id: 'nrv495corBc' }, // ChuChu TV (Safe Embed)
-  { title: 'Baa Baa Black Sheep', id: '0FxhksvgHcw' }, // ChuChu TV
-  { title: 'Five Little Monkeys', id: '0j6AZhZFb7A' }, // ChuChu TV
-  { title: 'Itsy Bitsy Spider', id: 'w_lCi8U49mY' }, // Super Simple Songs
+  { title: 'Row Row Row Your Boat', id: '7otAJa3jui8' },
+  { title: 'Humpty Dumpty', id: 'nrv495corBc' },
+  { title: 'Baa Baa Black Sheep', id: '0FxhksvgHcw' },
+  { title: 'Five Little Monkeys', id: '0j6AZhZFb7A' },
+  { title: 'Itsy Bitsy Spider', id: 'w_lCi8U49mY' },
   { title: 'If You\'re Happy and You Know It', id: 'mHLLclRQ10o' },
-  { title: 'Head, Shoulders, Knees & Toes', id: 'r41-kFRX2Xs' } // Backup: EIBd-QoEBQ0
+  { title: 'Head, Shoulders, Knees & Toes', id: 'r41-kFRX2Xs' }
 ];
 
 export function initRhymes() {

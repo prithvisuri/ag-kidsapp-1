@@ -12,10 +12,8 @@ export function initMath() {
 
     opBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Highlight active button
             opBtns.forEach(b => b.style.background = 'white');
             opBtns.forEach(b => b.style.color = 'black');
-            // Reset styles (simple toggle)
 
             btn.style.background = 'var(--secondary-color)';
             btn.style.color = 'white';
@@ -28,7 +26,7 @@ export function initMath() {
 
 function initNumbers() {
     const grid = document.getElementById('numbers-grid');
-    if (!grid) return; // safety check
+    if (!grid) return;
 
     grid.innerHTML = '';
     for (let i = 1; i <= 20; i++) {
@@ -47,7 +45,6 @@ function initNumbers() {
 
 
 function speakNumber(num) {
-    // Use lower pitch (1.2) and slower rate (0.8) for clear, distinct pronunciation
     speak(num.toString(), null, { isKid: false, pitch: 1.2, rate: 0.8 });
 }
 

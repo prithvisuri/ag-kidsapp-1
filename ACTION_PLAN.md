@@ -40,7 +40,6 @@ Goal: Automate confidence and deployment lifecycle.
   - [ ] Build
   - [ ] (Future) E2E tests
 - [ ] Add linting setup (ESLint) with unused-import/unused-variable checks.
-- [ ] Add backend test harness when backend logic is implemented.
 - [ ] Define staging + production promotion strategy.
 - [ ] Add runtime monitoring and client error reporting.
 
@@ -48,7 +47,6 @@ Goal: Automate confidence and deployment lifecycle.
 - Frontend tests: 44 passing.
 - Frontend build: passing.
 - Coverage gate: passing with enforced thresholds.
-- Backend: placeholder service only (no business logic/tests yet).
 
 ## Immediate Next Priorities
 1. Add Playwright E2E suite for critical child flows (navigation, quiz, star milestones).

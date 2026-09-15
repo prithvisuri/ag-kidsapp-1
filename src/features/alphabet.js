@@ -1,7 +1,6 @@
 import { speak } from '../utils/speech.js'
 
 const alphabet = [
-    // ... (rest of alphabet array)
     { letter: 'A', word: 'Apple', emoji: '🍎' },
     { letter: 'B', word: 'Ball', emoji: '⚽' },
     { letter: 'C', word: 'Cat', emoji: '🐱' },
@@ -38,7 +37,6 @@ export function initAlphabet() {
     const closeBtn = document.getElementById('close-overlay');
     if (!grid || !overlay || !closeBtn) return;
 
-    // Clear grid
     grid.innerHTML = '';
 
     alphabet.forEach((item, index) => {
@@ -58,7 +56,6 @@ export function initAlphabet() {
         overlay.classList.add('hidden');
     };
 
-    // Swipe Support for Overlay
     let touchStartX = 0;
     let touchEndX = 0;
 
@@ -74,12 +71,10 @@ export function initAlphabet() {
     function handleSwipe() {
         const threshold = 50;
         if (touchEndX < touchStartX - threshold) {
-            // Swipe Left -> Next Letter
             currentIdx = (currentIdx + 1) % alphabet.length;
             showLetter(alphabet[currentIdx], currentIdx);
         }
         if (touchEndX > touchStartX + threshold) {
-            // Swipe Right -> Prev Letter
             currentIdx = (currentIdx - 1 + alphabet.length) % alphabet.length;
             showLetter(alphabet[currentIdx], currentIdx);
         }
@@ -102,23 +97,18 @@ function showLetter(item, index) {
 }
 
 function playAudio(item) {
-    // 1. Play Letter Sound (MP3 or TTS)
-    // 2. Then Play "A for Apple" (TTS)
-
     const phrase = `${item.letter} for ${item.word}`;
 
     const playPhrase = () => {
         speak(phrase);
     };
 
-    // Try to play MP3 first
     const audio = new Audio(`/assets/sounds/${item.letter.toUpperCase()}.mp3`);
 
     audio.onended = playPhrase;
 
     audio.play().catch(e => {
         console.warn('Audio file not found, falling back to TTS', e);
-        // Fallback: Speak letter, then speak phrase
         speak(item.letter, playPhrase);
     });
 }

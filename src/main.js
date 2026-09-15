@@ -7,13 +7,11 @@ import { initSupabase } from './services/supabase.js'
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Silly School Initialized! 🎈');
 
-  // Initialize Modules
   initAlphabet();
   initMath();
   initRhymes();
   initSupabase();
 
-  // Navigation Logic
   setupNavigation();
 });
 
@@ -21,7 +19,6 @@ function setupNavigation() {
   const pages = document.querySelectorAll('.page');
   const backBtns = document.querySelectorAll('.back-btn');
 
-  // Navigate to section
   document.querySelectorAll('[data-target]').forEach(card => {
     card.addEventListener('click', () => {
       const targetId = card.getAttribute('data-target') + '-page';
@@ -29,7 +26,6 @@ function setupNavigation() {
     });
   });
 
-  // Navigate back
   backBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       navigateTo('landing-page');
@@ -42,9 +38,5 @@ function setupNavigation() {
     if (!targetPage) return;
     targetPage.classList.remove('hidden');
 
-    // Reset specific page states if needed
-    if (pageId === 'landing-page') {
-      // maybe stop videos or audio
-    }
   }
 }
