@@ -12,7 +12,9 @@ jobs:
           node-version: '26'
       - name: install dependencies
         run: npm install 
-      - name: run tests
+      - name: run build
+        run: mpn build
+      - name: mpm tests
         run: mpn test
         
           
