@@ -6,20 +6,43 @@ jobs:
     steps:
       - name: get code
         uses: actions/checkout@v7
+
       - name: install nodejs
         uses: actions/setup-node@v7
         with:
           node-version: '22'
+
       - name: install dependencies
         run: npm install 
+
       - name: run build
         run: npm run build
+
       - name: mpm tests
         run: npm test
 
-      # New step to create and upload the artifact
       - name: upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ag-kids-production-files # The name of your downloadable zip file
-          path: dist/ # The folder or file you want to save (e.g., dist, build, or out)
+          name: production-files
+          path: dist/
+
+      # --- New Docker Build and Push Steps ---
+      
+      - name: Set up Docker Buildx
+        uses: docker/bake-action@v7.4.0
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v4.6.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7.4.0
+        with:
+          context: . # Looks for a 'Dockerfile' in your root directory
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/ag-kidsapp:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/ag-kidsapp:${{ github.run_number }}
