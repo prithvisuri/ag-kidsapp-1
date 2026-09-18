@@ -26,6 +26,25 @@ describe('speech utilities', () => {
             expect(result.name).not.toContain('Male');
         });
 
+        it('rejects male voices like Google US English and prefers female teacher voice', () => {
+            const voices = [
+                { name: 'Google US English' }, // male in Chrome
+                { name: 'Alex' }, // male in macOS
+                { name: 'Samantha' } // clear female teacher in macOS
+            ];
+            const result = chooseVoice(voices);
+            expect(result.name).toBe('Samantha');
+        });
+
+        it('prefers Microsoft Jenny or Aria online natural voices if available', () => {
+            const voices = [
+                { name: 'Microsoft David Desktop - English (United States)' },
+                { name: 'Microsoft Jenny Online (Natural) - English (United States)' }
+            ];
+            const result = chooseVoice(voices);
+            expect(result.name).toContain('Jenny');
+        });
+
         it('falls back to Zira when google voice missing', () => {
             const voices = [{ name: 'Zira' }, { name: 'Some Male' }];
             expect(chooseVoice(voices).name).toBe('Zira');
@@ -101,6 +120,16 @@ describe('speech utilities', () => {
             expect(utterance.pitch).toBe(2);
             expect(utterance.rate).toBe(0.5);
             expect(utterance.onend).toBe(cb);
+        });
+
+        it('cancels previous speech and repeats when called repeatedly', () => {
+            global.window.speechSynthesis.getVoices.mockReturnValue([
+                { name: 'Samantha' }
+            ]);
+            speak('A');
+            speak('A');
+            expect(global.window.speechSynthesis.cancel).toHaveBeenCalledTimes(2);
+            expect(global.window.speechSynthesis.speak).toHaveBeenCalledTimes(2);
         });
     });
 });

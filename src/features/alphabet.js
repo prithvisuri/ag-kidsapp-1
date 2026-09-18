@@ -31,10 +31,15 @@ const alphabet = [
 
 let currentIdx = 0;
 
+let currentAudio = null;
+
 export function initAlphabet() {
     const grid = document.getElementById('alphabet-grid');
     const overlay = document.getElementById('alphabet-overlay');
     const closeBtn = document.getElementById('close-overlay');
+    const letterEl = document.getElementById('overlay-letter');
+    const wordEl = document.getElementById('overlay-word');
+    const repeatBtn = document.getElementById('repeat-voice-btn');
     if (!grid || !overlay || !closeBtn) return;
 
     grid.innerHTML = '';
@@ -54,7 +59,42 @@ export function initAlphabet() {
 
     closeBtn.onclick = () => {
         overlay.classList.add('hidden');
+        if (currentAudio) {
+            try { currentAudio.pause(); } catch (e) { }
+            currentAudio = null;
+        }
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+        }
     };
+
+    if (letterEl) {
+        letterEl.style.cursor = 'pointer';
+        letterEl.title = 'Click to listen again';
+        letterEl.onclick = () => {
+            letterEl.classList.add('bouncing');
+            setTimeout(() => letterEl.classList.remove('bouncing'), 500);
+            playAudio(alphabet[currentIdx]);
+        };
+    }
+
+    if (wordEl) {
+        wordEl.style.cursor = 'pointer';
+        wordEl.title = 'Click to listen again';
+        wordEl.onclick = () => {
+            wordEl.classList.add('bouncing');
+            setTimeout(() => wordEl.classList.remove('bouncing'), 500);
+            playAudio(alphabet[currentIdx]);
+        };
+    }
+
+    if (repeatBtn) {
+        repeatBtn.onclick = () => {
+            repeatBtn.classList.add('bouncing');
+            setTimeout(() => repeatBtn.classList.remove('bouncing'), 500);
+            playAudio(alphabet[currentIdx]);
+        };
+    }
 
     let touchStartX = 0;
     let touchEndX = 0;
@@ -103,11 +143,26 @@ function playAudio(item) {
         speak(phrase);
     };
 
-    const audio = new Audio(`/assets/sounds/${item.letter.toUpperCase()}.mp3`);
+    if (currentAudio) {
+        try {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+        } catch (e) {
+            // ignore
+        }
+        currentAudio = null;
+    }
 
-    audio.onended = playPhrase;
+    const audio = new Audio(`/assets/sounds/${item.letter.toUpperCase()}.mp3`);
+    currentAudio = audio;
+
+    audio.onended = () => {
+        currentAudio = null;
+        playPhrase();
+    };
 
     audio.play().catch(e => {
+        currentAudio = null;
         console.warn('Audio file not found, falling back to TTS', e);
         speak(item.letter, playPhrase);
     });

@@ -19,6 +19,13 @@ export function initMath() {
             btn.style.color = 'white';
 
             currentOp = btn.getAttribute('data-op');
+            const opNames = {
+                add: 'Addition',
+                sub: 'Subtraction',
+                mul: 'Multiplication',
+                div: 'Division'
+            };
+            speak(opNames[currentOp] || 'Math Fun');
             startQuiz();
         });
     });
@@ -62,6 +69,16 @@ function generateQuestion() {
     if (!questionText || !feedbackMsg) return;
 
     questionText.innerText = `${a} ${symbol} ${b} = ?`;
+    questionText.style.cursor = 'pointer';
+    questionText.title = 'Click to hear question';
+
+    questionText.onclick = () => {
+        questionText.classList.add('bouncing');
+        setTimeout(() => questionText.classList.remove('bouncing'), 500);
+        const wordOp = symbol === '+' ? 'plus' : symbol === '-' ? 'minus' : symbol === '×' ? 'times' : 'divided by';
+        speak(`${a} ${wordOp} ${b} equals what?`);
+    };
+
     feedbackMsg.innerText = '';
 
     generateAnswers(answer);
@@ -118,11 +135,13 @@ function checkAnswer(selected, correct, btnElement) {
     if (selected === correct) {
         btnElement.classList.add('correct');
         feedbackMsg.innerText = 'Yay! Correct! 🎉';
+        speak('Yay! Correct! Great job!');
         triggerConfetti();
         addStar();
         setTimeout(generateQuestion, 1500);
     } else {
         btnElement.classList.add('wrong');
         feedbackMsg.innerText = 'Try again! 🙃';
+        speak('Try again!');
     }
 }

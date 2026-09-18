@@ -1,42 +1,88 @@
 
-// helper that chooses the preferred voice from a list, favoring female/kid voices
+// Helper that chooses a clean, neat female teacher voice, strictly excluding male voices
 export function chooseVoice(voices = []) {
     if (!voices || voices.length === 0) return undefined;
     
     const lower = (s) => (s || '').toLowerCase();
     
-    // Step 1: Filter out obvious male voices
-    let candidates = voices.filter(v => {
-        const name = lower(v.name);
-        return !name.includes('male') && !name.includes('man') && !name.includes('boy');
-    });
+    const isExplicitlyMale = (name) => {
+        const n = lower(name);
+        // If explicitly labelled female, woman, or girl, it is not male
+        if (n.includes('female') || n.includes('woman') || n.includes('girl')) {
+            return false;
+        }
+        
+        // Obvious male names and keywords across Chrome, macOS, Windows, Android
+        const maleKeywords = [
+            'male', ' man', '(man)', 'boy', 'guy',
+            'alex', 'fred', 'daniel', 'david', 'mark', 'george', 'oliver',
+            'james', 'tom', 'bruce', 'lee', 'aaron', 'albert', 'ralph',
+            'junior', 'zarvox', 'whisper', 'trinoids', 'deranged', 'bad news', 'good news',
+            'bells', 'cellos', 'pipe organ'
+        ];
+        
+        if (maleKeywords.some(keyword => n.includes(keyword))) {
+            return true;
+        }
+
+        // In Google Chrome, "Google US English" is a male voice
+        if (n === 'google us english' || n.startsWith('google us english (')) {
+            return true;
+        }
+
+        return false;
+    };
+
+    // Filter candidate voices: strictly prefer non-male voices
+    let candidates = voices.filter(v => !isExplicitlyMale(v.name));
     
-    // If all voices are male, use original list
-    if (candidates.length === 0) candidates = voices;
+    // Fallback to original list only if all available voices are male
+    if (candidates.length === 0) {
+        candidates = voices;
+    }
     
-    // Step 2: Look for specific female voice keywords in priority order
-    const searchTerms = [
+    // Specific high-quality clean female teacher voice names in priority order
+    const priorityFemaleVoices = [
         'google us english female',
-        'google us english',
-        'zira',
-        'victoria',
-        'samantha',
+        'google uk english female',
+        'jenny',      // Microsoft Jenny (Natural clean teacher)
+        'aria',       // Microsoft Aria (Natural clean teacher)
+        'samantha',   // Apple Samantha (Calm, articulate macOS/iOS teacher)
+        'victoria',   // Apple Victoria (Clear UK teacher)
+        'karen',      // Apple Karen (Clear AU teacher)
+        'serena',     // Apple Serena
+        'zira',       // Microsoft Zira
+        'ava',
+        'allison',
+        'susan',
+        'fiona',
+        'moira',
+        'tessa',
+        'veena',
         'female',
         'woman',
-        'girl',
+        'girl'
     ];
     
-    for (const term of searchTerms) {
+    // 1. Look for preferred female teacher voices
+    for (const term of priorityFemaleVoices) {
         const found = candidates.find(v => lower(v.name).includes(term));
         if (found) return found;
     }
     
-    // Step 3: Fallback to first non-male voice
+    // 2. Look for any English voice that is not male
+    const englishNonMale = candidates.find(v => {
+        const lang = lower(v.lang);
+        return lang.startsWith('en') && !isExplicitlyMale(v.name);
+    });
+    if (englishNonMale) return englishNonMale;
+    
+    // 3. Fallback to first non-male candidate or first available voice
     return candidates[0] || voices[0];
 }
 
 export function speak(text, onEndCallback, options = {}) {
-    const { isKid = false, pitch, rate } = options;
+    const { isKid = false, pitch, rate, volume = 1 } = options;
 
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
         // nothing we can do in non-browser environments
@@ -44,22 +90,33 @@ export function speak(text, onEndCallback, options = {}) {
     }
 
     const doSpeak = () => {
+        // Cancel any pending speech immediately so repeated clicks repeat without delay
         window.speechSynthesis.cancel();
+        if (window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+        }
 
         const utterance = new SpeechSynthesisUtterance(text);
         const voices = window.speechSynthesis.getVoices();
         const selectedVoice = chooseVoice(voices);
         if (selectedVoice) {
             utterance.voice = selectedVoice;
+            if (selectedVoice.lang) {
+                utterance.lang = selectedVoice.lang;
+            }
         }
 
         if (isKid) {
-            utterance.pitch = pitch || 1.3; // Higher pitch
-            utterance.rate = rate || 0.9;  // Slightly slower
+            utterance.pitch = pitch !== undefined ? pitch : 1.3; // Higher pitch
+            utterance.rate = rate !== undefined ? rate : 0.9;   // Slightly slower
         } else {
-            utterance.pitch = pitch || 1.1; // Friendly female pitch
-            utterance.rate = rate || 0.85; // Clear enunciation
+            // Clean, neat, instructional female teacher cadence:
+            // Pitch: 1.05 - 1.1 (warm, friendly, natural female tone)
+            // Rate: 0.85 (clear, articulate teaching pace for kids)
+            utterance.pitch = pitch !== undefined ? pitch : 1.05;
+            utterance.rate = rate !== undefined ? rate : 0.85;
         }
+        utterance.volume = volume;
 
         if (onEndCallback) {
             utterance.onend = onEndCallback;
