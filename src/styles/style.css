@@ -18,13 +18,17 @@
 
 body {
   font-family: var(--font-main);
-  background-color: var(--light-color);
-  color: var(--dark-color);
+  background-color: #112038;
+  color: #ffffff;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  background-image: radial-gradient(#4ECDC4 1px, transparent 1px);
-  background-size: 20px 20px;
+  background-image: url('/assets/images/space-bg.jpg');
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
 }
 
 #app {
@@ -32,18 +36,36 @@ body {
   margin: 0 auto;
   padding: 20px;
   text-align: center;
+  position: relative;
+  min-height: 100vh;
 }
 
 h1 {
   color: var(--primary-color);
-  font-size: 3rem;
+  font-size: 3.2rem;
   margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 0px var(--accent-color);
+  text-shadow: 3px 3px 0px var(--accent-color), 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
 h2 {
-  color: var(--secondary-color);
-  font-size: 2rem;
+  color: #5cf2e6;
+  font-size: 2.2rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+#user-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--dark-color);
+  font-weight: 700;
+  font-size: 1.3rem;
+  padding: 8px 20px;
+  border-radius: 30px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  border: 3px solid var(--accent-color);
+  margin-top: 6px;
 }
 
 .hidden {
@@ -59,18 +81,19 @@ h2 {
 }
 
 .card {
-  background: white;
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 24px;
   padding: 2rem;
   cursor: pointer;
-  box-shadow: var(--card-shadow);
-  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
   border: 4px solid transparent;
+  color: var(--dark-color);
 }
 
 .card:hover {
   transform: translateY(-10px) scale(1.05);
-  box-shadow: var(--card-hover);
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.45);
 }
 
 .alphabet-card {
@@ -95,18 +118,24 @@ h2 {
   position: absolute;
   top: 20px;
   left: 20px;
-  background: var(--dark-color);
-  color: white;
-  border: none;
-  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--dark-color);
+  border: 3px solid var(--secondary-color);
+  padding: 10px 22px;
   border-radius: 30px;
   font-size: 1.2rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+  z-index: 10;
 }
 
 .back-btn:hover {
   background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  transform: translateY(-2px) scale(1.05);
 }
 
 @media (max-width: 600px) {
@@ -127,6 +156,18 @@ h2 {
   }
 }
 
+h3 {
+  color: #ffe66d;
+  font-size: 1.6rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.card h3 {
+  color: var(--dark-color);
+  text-shadow: none;
+  font-size: 1.5rem;
+}
+
 /* Alphabet Grid */
 .grid-container {
   display: grid;
@@ -137,8 +178,8 @@ h2 {
 
 .letter-card,
 .number-card {
-  background: white;
-  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 18px;
   aspect-ratio: 1;
   display: flex;
   align-items: center;
@@ -146,9 +187,9 @@ h2 {
   font-size: 2.5rem;
   font-weight: bold;
   color: var(--primary-color);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
 }
 
 .number-card {
@@ -159,6 +200,7 @@ h2 {
 .number-card:hover {
   transform: scale(1.1);
   background-color: var(--accent-color);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
 }
 
 /* Overlay */
@@ -184,6 +226,7 @@ h2 {
   text-align: center;
   animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
+  color: var(--dark-color);
 }
 
 @keyframes popIn {
@@ -227,24 +270,38 @@ h2 {
 }
 
 .op-btn {
-  background: white;
-  border: 2px solid var(--secondary-color);
-  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 3px solid var(--secondary-color);
+  color: var(--dark-color);
+  padding: 12px 24px;
   font-size: 1.2rem;
-  border-radius: 15px;
-  margin: 5px;
+  font-weight: bold;
+  border-radius: 18px;
+  margin: 6px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .op-btn:hover {
   background: var(--secondary-color);
   color: white;
+  transform: translateY(-2px);
 }
 
 .question-box {
-  font-size: 4rem;
-  margin: 20px 0;
+  font-size: 3.8rem;
+  margin: 20px auto;
   font-weight: bold;
+  color: #ffe66d;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  background: rgba(18, 33, 58, 0.75);
+  border: 3px solid rgba(255, 230, 109, 0.6);
+  border-radius: 24px;
+  display: inline-block;
+  padding: 10px 35px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
 .answers-container {
@@ -256,27 +313,29 @@ h2 {
 }
 
 .answer-btn {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--dark-color);
   border: none;
   padding: 20px;
-  font-size: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 0 #ddd;
+  font-size: 2.2rem;
+  font-weight: bold;
+  border-radius: 20px;
+  box-shadow: 0 6px 0 #cbd5e1, 0 10px 20px rgba(0, 0, 0, 0.25);
   cursor: pointer;
-  transition: transform 0.1s;
+  transition: transform 0.1s, box-shadow 0.1s;
 }
 
 .answer-btn:active {
   transform: translateY(4px);
-  box-shadow: none;
+  box-shadow: 0 2px 0 #cbd5e1;
 }
 
 .correct {
-  background-color: #a8f5ac;
+  background-color: #a8f5ac !important;
 }
 
 .wrong {
-  background-color: #ffcccb;
+  background-color: #ffcccb !important;
   animation: shake 0.4s;
 }
 
@@ -304,10 +363,17 @@ h2 {
 }
 
 .video-card {
-  background: white;
-  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  color: var(--dark-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.video-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
 }
 
 .video-thumb {
