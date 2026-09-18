@@ -9,14 +9,17 @@ jobs:
       - name: install nodejs
         uses: actions/setup-node@v7
         with:
-          node-version: '22' # Changed from '26' to a valid LTS version
+          node-version: '22'
       - name: install dependencies
         run: npm install 
       - name: run build
-        run: npm run build # Fixed "mpn build" typo and added "run"
+        run: npm run build
       - name: mpm tests
-        run: npm test # Fixed "mpn test" typo
+        run: npm test
 
-          
-     
-    
+      # New step to create and upload the artifact
+      - name: upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-files # The name of your downloadable zip file
+          path: dist/ # The folder or file you want to save (e.g., dist, build, or out)
