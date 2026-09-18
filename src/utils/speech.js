@@ -1,5 +1,5 @@
 
-// Helper that chooses a clean, neat female teacher voice, strictly excluding male voices
+// Helper that chooses a clean, neat female teacher voice in English, strictly excluding male and non-English voices
 export function chooseVoice(voices = []) {
     if (!voices || voices.length === 0) return undefined;
     
@@ -25,7 +25,7 @@ export function chooseVoice(voices = []) {
             return true;
         }
 
-        // In Google Chrome, "Google US English" is a male voice
+        // In Google Chrome, "Google US English" without "Female" is a male voice
         if (n === 'google us english' || n.startsWith('google us english (')) {
             return true;
         }
@@ -33,15 +33,38 @@ export function chooseVoice(voices = []) {
         return false;
     };
 
-    // Filter candidate voices: strictly prefer non-male voices
-    let candidates = voices.filter(v => !isExplicitlyMale(v.name));
+    const isNonEnglish = (v) => {
+        const lang = lower(v.lang);
+        // If language code is present, it must be English (en, en-US, en-GB, en-AU, etc.)
+        if (lang) {
+            return !lang.startsWith('en');
+        }
+        // If language code is omitted, check common non-English keywords in name
+        const n = lower(v.name);
+        const nonEnglishKeywords = [
+            'spanish', 'español', 'french', 'français', 'german', 'deutsch',
+            'italian', 'italiano', 'hindi', 'japanese', 'chinese', 'korean',
+            'russian', 'portuguese', 'arabic', 'dutch', 'polish', 'turkish',
+            'swedish', 'danish', 'norwegian', 'greek', 'thai', 'vietnamese'
+        ];
+        return nonEnglishKeywords.some(keyword => n.includes(keyword));
+    };
+
+    // Step 1: Filter out non-English voices
+    let englishVoices = voices.filter(v => !isNonEnglish(v));
+    if (englishVoices.length === 0) {
+        englishVoices = voices; // Fallback if device has no explicitly labeled English voice
+    }
+
+    // Step 2: Filter candidate voices: strictly prefer non-male English voices
+    let candidates = englishVoices.filter(v => !isExplicitlyMale(v.name));
     
-    // Fallback to original list only if all available voices are male
+    // Fallback to English list if all available voices are male
     if (candidates.length === 0) {
-        candidates = voices;
+        candidates = englishVoices;
     }
     
-    // Specific high-quality clean female teacher voice names in priority order
+    // Specific high-quality clean female teacher voice names in English, in priority order
     const priorityFemaleVoices = [
         'google us english female',
         'google uk english female',
@@ -64,7 +87,7 @@ export function chooseVoice(voices = []) {
         'girl'
     ];
     
-    // 1. Look for preferred female teacher voices
+    // 1. Look for preferred English female teacher voices
     for (const term of priorityFemaleVoices) {
         const found = candidates.find(v => lower(v.name).includes(term));
         if (found) return found;
@@ -73,12 +96,12 @@ export function chooseVoice(voices = []) {
     // 2. Look for any English voice that is not male
     const englishNonMale = candidates.find(v => {
         const lang = lower(v.lang);
-        return lang.startsWith('en') && !isExplicitlyMale(v.name);
+        return (lang.startsWith('en') || !lang) && !isExplicitlyMale(v.name);
     });
     if (englishNonMale) return englishNonMale;
     
-    // 3. Fallback to first non-male candidate or first available voice
-    return candidates[0] || voices[0];
+    // 3. Fallback to first non-male candidate or first available English voice
+    return candidates[0] || englishVoices[0];
 }
 
 export function speak(text, onEndCallback, options = {}) {
@@ -99,11 +122,14 @@ export function speak(text, onEndCallback, options = {}) {
         const utterance = new SpeechSynthesisUtterance(text);
         const voices = window.speechSynthesis.getVoices();
         const selectedVoice = chooseVoice(voices);
+        
+        // Enforce English language speech
         if (selectedVoice) {
             utterance.voice = selectedVoice;
-            if (selectedVoice.lang) {
-                utterance.lang = selectedVoice.lang;
-            }
+            const voiceLang = (selectedVoice.lang || '').toLowerCase();
+            utterance.lang = voiceLang.startsWith('en') ? selectedVoice.lang : 'en-US';
+        } else {
+            utterance.lang = 'en-US';
         }
 
         if (isKid) {

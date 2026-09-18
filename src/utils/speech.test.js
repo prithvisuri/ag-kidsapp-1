@@ -8,6 +8,7 @@ class FakeUtterance {
         this.pitch = undefined;
         this.rate = undefined;
         this.voice = undefined;
+        this.lang = undefined;
         this.onend = null;
     }
 }
@@ -43,6 +44,16 @@ describe('speech utilities', () => {
             ];
             const result = chooseVoice(voices);
             expect(result.name).toContain('Jenny');
+        });
+
+        it('strictly excludes non-English female voices in favor of English voices', () => {
+            const voices = [
+                { name: 'Paulina (Spanish Female)', lang: 'es-MX' },
+                { name: 'Amelie (French Female)', lang: 'fr-FR' },
+                { name: 'Samantha', lang: 'en-US' }
+            ];
+            const result = chooseVoice(voices);
+            expect(result.name).toBe('Samantha');
         });
 
         it('falls back to Zira when google voice missing', () => {
@@ -124,12 +135,28 @@ describe('speech utilities', () => {
 
         it('cancels previous speech and repeats when called repeatedly', () => {
             global.window.speechSynthesis.getVoices.mockReturnValue([
-                { name: 'Samantha' }
+                { name: 'Samantha', lang: 'en-US' }
             ]);
             speak('A');
             speak('A');
             expect(global.window.speechSynthesis.cancel).toHaveBeenCalledTimes(2);
             expect(global.window.speechSynthesis.speak).toHaveBeenCalledTimes(2);
+        });
+
+        it('always sets utterance language to an English locale', () => {
+            global.window.speechSynthesis.getVoices.mockReturnValue([
+                { name: 'Samantha', lang: 'en-US' }
+            ]);
+            speak('Hello');
+            const utterance = global.window.speechSynthesis.speak.mock.calls[0][0];
+            expect(utterance.lang).toBe('en-US');
+        });
+
+        it('defaults utterance language to en-US when voice has no lang or non-english', () => {
+            global.window.speechSynthesis.getVoices.mockReturnValue([{ name: 'SomeVoice' }]);
+            speak('Hello');
+            const utterance = global.window.speechSynthesis.speak.mock.calls[0][0];
+            expect(utterance.lang).toBe('en-US');
         });
     });
 });
