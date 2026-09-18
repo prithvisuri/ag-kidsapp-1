@@ -105,23 +105,32 @@ function generateAnswers(correctAnswer) {
     });
 }
 
+function getSecureRandom() {
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+        const arr = new Uint32Array(1);
+        crypto.getRandomValues(arr);
+        return arr[0] / (0xFFFFFFFF + 1);
+    }
+    return Math.random();
+}
+
 function triggerConfetti() {
     const app = document.getElementById('app');
     if (!app) return;
     for (let i = 0; i < 20; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 100 + 'vw';
-        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
+        confetti.style.left = getSecureRandom() * 100 + 'vw';
+        confetti.style.backgroundColor = `hsl(${getSecureRandom() * 360}, 70%, 60%)`;
         confetti.style.opacity = '1';
         confetti.style.top = '-10px';
         app.appendChild(confetti);
 
         const animation = confetti.animate([
             { transform: 'translateY(0) rotate(0)', opacity: 1 },
-            { transform: `translateY(100vh) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+            { transform: `translateY(100vh) rotate(${getSecureRandom() * 360}deg)`, opacity: 0 }
         ], {
-            duration: 1000 + Math.random() * 2000,
+            duration: 1000 + getSecureRandom() * 2000,
             easing: 'cubic-bezier(0, .9, .57, 1)'
         });
 

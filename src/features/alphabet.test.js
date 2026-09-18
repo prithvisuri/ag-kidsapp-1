@@ -34,6 +34,7 @@ describe('alphabet feature', () => {
       <div id="alphabet-overlay" class="overlay hidden">
         <span id="overlay-letter"></span>
         <p id="overlay-word"></p>
+        <button id="repeat-voice-btn">repeat</button>
         <button id="close-overlay">x</button>
       </div>
     `;
@@ -99,9 +100,22 @@ describe('alphabet feature', () => {
   });
 
   it('closes overlay when close button is clicked', () => {
+    window.speechSynthesis = { cancel: vi.fn() };
     initAlphabet();
     document.querySelector('.letter-card').click();
     document.getElementById('close-overlay').click();
     expect(document.getElementById('alphabet-overlay').classList.contains('hidden')).toBe(true);
+    expect(window.speechSynthesis.cancel).toHaveBeenCalled();
+  });
+
+  it('handles clicks on overlay letter, word, and repeat button', () => {
+    initAlphabet();
+    document.querySelector('.letter-card').click();
+
+    expect(() => {
+      document.getElementById('overlay-letter').click();
+      document.getElementById('overlay-word').click();
+      document.getElementById('repeat-voice-btn').click();
+    }).not.toThrow();
   });
 });

@@ -45,4 +45,22 @@ describe('supabase service fallback behavior', () => {
     expect(document.getElementById('level-up-overlay').classList.contains('hidden')).toBe(false);
     expect(Number(document.getElementById('milestone-stars').innerText)).toBe(10);
   });
+
+  it('handles milestones 25, 50, and 100 badges correctly', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const starsEl = document.getElementById('stars-count');
+    const badgeEl = document.getElementById('badge-display');
+
+    starsEl.innerText = '24';
+    await addStar();
+    expect(badgeEl.innerText).toBe('🥈');
+
+    starsEl.innerText = '49';
+    await addStar();
+    expect(badgeEl.innerText).toBe('🥇');
+
+    starsEl.innerText = '99';
+    await addStar();
+    expect(badgeEl.innerText).toBe('👑');
+  });
 });

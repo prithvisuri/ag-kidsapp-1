@@ -104,4 +104,15 @@ describe('math feature', () => {
     correctBtn.click();
     expect(addStar).toHaveBeenCalled();
   });
+
+  it('speaks question when question text is clicked across operations', () => {
+    initMath();
+    const ops = ['add', 'sub', 'mul', 'div'];
+    ops.forEach((op) => {
+      document.querySelector(`[data-op="${op}"]`).click();
+      const questionText = document.getElementById('question-text');
+      questionText.click();
+      expect(speak).toHaveBeenCalled();
+    });
+  });
 });

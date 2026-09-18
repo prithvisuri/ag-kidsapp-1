@@ -60,7 +60,7 @@ export function initAlphabet() {
     closeBtn.onclick = () => {
         overlay.classList.add('hidden');
         if (currentAudio) {
-            try { currentAudio.pause(); } catch (e) { }
+            try { currentAudio.pause(); } catch { /* ignore pause error */ }
             currentAudio = null;
         }
         if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -147,8 +147,8 @@ function playAudio(item) {
         try {
             currentAudio.pause();
             currentAudio.currentTime = 0;
-        } catch (e) {
-            // ignore
+        } catch {
+            // ignore pause/reset error
         }
         currentAudio = null;
     }

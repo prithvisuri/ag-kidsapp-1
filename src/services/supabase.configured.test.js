@@ -49,7 +49,7 @@ describe('supabase service configured behavior', () => {
     const { initSupabase } = await import('./supabase.js');
     await initSupabase();
 
-    expect(document.getElementById('stars-count').innerText).toBe(7);
+    expect(Number(document.getElementById('stars-count').innerText)).toBe(7);
     expect(document.getElementById('user-progress').classList.contains('hidden')).toBe(false);
   });
 

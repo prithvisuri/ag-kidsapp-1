@@ -27,7 +27,8 @@ export async function initSupabase() {
         return null;
     }
 
-    const { data: { session }, error } = await supabase.auth.getSession();
+    const { data, error } = await supabase.auth.getSession();
+    const session = data?.session;
 
     if (error) {
         console.error('Error getting session:', error);
@@ -80,7 +81,8 @@ export async function addStar() {
         return;
     }
 
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data } = await supabase.auth.getSession();
+    const session = data?.session;
 
     if (session?.user) {
         const { error } = await supabase
@@ -120,6 +122,7 @@ function checkStarMilestones(stars) {
             case 25: badgeDisplay.innerText = '🥈'; break;
             case 50: badgeDisplay.innerText = '🥇'; break;
             case 100: badgeDisplay.innerText = '👑'; break;
+            default: break;
         }
 
         levelUpOverlay.classList.remove('hidden');

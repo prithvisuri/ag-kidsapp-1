@@ -1,6 +1,15 @@
 // Pure logic helpers extracted from math.js for testability
 
-export function generateQuestionData(op, random = Math.random) {
+function getSecureRandom() {
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+        const arr = new Uint32Array(1);
+        crypto.getRandomValues(arr);
+        return arr[0] / (0xFFFFFFFF + 1);
+    }
+    return Math.random();
+}
+
+export function generateQuestionData(op, random = getSecureRandom) {
     // "random" should be a function returning a number in [0,1)
     const r = () => random();
     let a, b, answer, symbol;
@@ -37,7 +46,7 @@ export function generateQuestionData(op, random = Math.random) {
     return { a, b, answer, symbol };
 }
 
-export function generateAnswers(correctAnswer, random = Math.random) {
+export function generateAnswers(correctAnswer, random = getSecureRandom) {
     const r = () => random();
     const answers = new Set([correctAnswer]);
 
