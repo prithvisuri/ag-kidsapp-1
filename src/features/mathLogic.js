@@ -1,12 +1,9 @@
 // Pure logic helpers extracted from math.js for testability
 
 function getSecureRandom() {
-    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
-        const arr = new Uint32Array(1);
-        crypto.getRandomValues(arr);
-        return arr[0] / (0xFFFFFFFF + 1);
-    }
-    return Math.random();
+    const arr = new Uint32Array(1);
+    globalThis.crypto.getRandomValues(arr);
+    return arr[0] / 0x100000000;
 }
 
 export function generateQuestionData(op, random = getSecureRandom) {

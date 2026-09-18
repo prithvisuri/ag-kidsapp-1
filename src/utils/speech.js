@@ -104,6 +104,26 @@ export function chooseVoice(voices = []) {
     return candidates[0] || englishVoices[0];
 }
 
+function applyVoiceAndLanguage(utterance, selectedVoice) {
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        const voiceLang = (selectedVoice.lang || '').toLowerCase();
+        utterance.lang = voiceLang.startsWith('en') ? selectedVoice.lang : 'en-US';
+    } else {
+        utterance.lang = 'en-US';
+    }
+}
+
+function applyPitchAndRate(utterance, isKid, pitch, rate) {
+    if (isKid) {
+        utterance.pitch = pitch !== undefined ? pitch : 1.3;
+        utterance.rate = rate !== undefined ? rate : 0.9;
+    } else {
+        utterance.pitch = pitch !== undefined ? pitch : 1.05;
+        utterance.rate = rate !== undefined ? rate : 0.85;
+    }
+}
+
 export function speak(text, onEndCallback, options = {}) {
     const { isKid = false, pitch, rate, volume = 1 } = options;
 
@@ -123,25 +143,8 @@ export function speak(text, onEndCallback, options = {}) {
         const voices = window.speechSynthesis.getVoices();
         const selectedVoice = chooseVoice(voices);
         
-        // Enforce English language speech
-        if (selectedVoice) {
-            utterance.voice = selectedVoice;
-            const voiceLang = (selectedVoice.lang || '').toLowerCase();
-            utterance.lang = voiceLang.startsWith('en') ? selectedVoice.lang : 'en-US';
-        } else {
-            utterance.lang = 'en-US';
-        }
-
-        if (isKid) {
-            utterance.pitch = pitch !== undefined ? pitch : 1.3; // Higher pitch
-            utterance.rate = rate !== undefined ? rate : 0.9;   // Slightly slower
-        } else {
-            // Clean, neat, instructional female teacher cadence:
-            // Pitch: 1.05 - 1.1 (warm, friendly, natural female tone)
-            // Rate: 0.85 (clear, articulate teaching pace for kids)
-            utterance.pitch = pitch !== undefined ? pitch : 1.05;
-            utterance.rate = rate !== undefined ? rate : 0.85;
-        }
+        applyVoiceAndLanguage(utterance, selectedVoice);
+        applyPitchAndRate(utterance, isKid, pitch, rate);
         utterance.volume = volume;
 
         if (onEndCallback) {

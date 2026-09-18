@@ -21,7 +21,7 @@ function setupNavigation() {
 
   document.querySelectorAll('[data-target]').forEach(card => {
     card.addEventListener('click', () => {
-      const targetId = card.getAttribute('data-target') + '-page';
+      const targetId = card.dataset.target + '-page';
       navigateTo(targetId);
     });
   });

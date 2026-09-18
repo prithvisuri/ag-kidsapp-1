@@ -128,9 +128,9 @@ function checkStarMilestones(stars) {
         levelUpOverlay.classList.remove('hidden');
 
         const starsEl = document.getElementById('stars-count');
-        if (starsEl && starsEl.parentElement) starsEl.parentElement.classList.add('bouncing');
+        starsEl?.parentElement?.classList.add('bouncing');
         setTimeout(() => {
-            if (starsEl && starsEl.parentElement) starsEl.parentElement.classList.remove('bouncing');
+            starsEl?.parentElement?.classList.remove('bouncing');
         }, 1000);
 
         closeBtn.onclick = () => {

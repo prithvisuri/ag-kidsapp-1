@@ -18,7 +18,7 @@ export function initMath() {
             btn.style.background = 'var(--secondary-color)';
             btn.style.color = 'white';
 
-            currentOp = btn.getAttribute('data-op');
+            currentOp = btn.dataset.op;
             const opNames = {
                 add: 'Addition',
                 sub: 'Subtraction',
@@ -75,7 +75,8 @@ function generateQuestion() {
     questionText.onclick = () => {
         questionText.classList.add('bouncing');
         setTimeout(() => questionText.classList.remove('bouncing'), 500);
-        const wordOp = symbol === '+' ? 'plus' : symbol === '-' ? 'minus' : symbol === '×' ? 'times' : 'divided by';
+        const opWords = { '+': 'plus', '-': 'minus', '×': 'times', '÷': 'divided by' };
+        const wordOp = opWords[symbol] || 'plus';
         speak(`${a} ${wordOp} ${b} equals what?`);
     };
 
@@ -106,12 +107,9 @@ function generateAnswers(correctAnswer) {
 }
 
 function getSecureRandom() {
-    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
-        const arr = new Uint32Array(1);
-        crypto.getRandomValues(arr);
-        return arr[0] / (0xFFFFFFFF + 1);
-    }
-    return Math.random();
+    const arr = new Uint32Array(1);
+    globalThis.crypto.getRandomValues(arr);
+    return arr[0] / 0x100000000;
 }
 
 function triggerConfetti() {
