@@ -26,15 +26,15 @@ jobs:
       - name: npm tests
         run: npm test
 
-      # --- SonarQube Analysis Steps ---
-      - name: SonarQube Scan
+      # --- SonarCloud Analysis Steps ---
+      - name: SonarCloud Scan
         uses: sonarsource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # Not needed if using SonarCloud
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Optional: Uncomment if you want to fail the pipeline when the Quality Gate fails
-      # - name: SonarQube Quality Gate Check
+      # - name: SonarCloud Quality Gate Check
       #   uses: sonarsource/sonarqube-quality-gate-action@v1
       #   timeout-minutes: 5
       #   env:
